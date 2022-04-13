@@ -1,19 +1,16 @@
 <?php
 echo "Hello there, this is a PHP Apache container";
-//These are the defined authentication environment in the db service
 
-// The MySQL service named in the docker-compose.yml.
 $host = 'db';
 
-// Database use name
 $user = 'MYSQL_USER';
 
-//database user password
+
 $pass = 'MYSQL_PASSWORD';
 
-// database name
+
 $mydatabase = 'MYSQL_DATABASE';
-// check the mysql connection status
+// MySQL Connection 
 $conn = new mysqli($host, $user, $pass, $mydatabase);
 
 if ($conn->connect_errno) {
@@ -29,7 +26,7 @@ else{
 		echo "<br>";
 	}
 
-	$sql = "insert into users (username, password) values ('Alice','this is my password'), ('Job','12345678')";
+	$sql = "insert into users (username, password) values ('1','Zamran')";
 	
 	if ($conn->query($sql) === TRUE) {
 		echo "Data inserted successfully";
@@ -50,24 +47,51 @@ else{
 	}
 }
 echo "<br>";
+// Mongo Connection
+try {
+	
+	$m =  new MongoDB\Driver\Manager("mongodb://root:password@mongo:27017");
+	echo "Connection to database successfully";
+	
+	$filter = ['id' => 1];
+	 $options = [
+    'projection' => ['_id' => 0],
+ 	];
+	 $query = new MongoDB\Driver\Query($filter, $options);
+ 	$rows = $m->executeQuery('db.testCol', $query); 
+	 print_r($rows->toArray());
 
-echo extension_loaded("mongodb") ? "loaded\n" : "not loaded\n";
-
-  //  // connect to mongodb
-    $manager = new MongoDB\Driver\Manager("mongodb://root:password@mongo:27017");
-
-   echo "Connection to Mongo database successfully";
 
 
+}
+catch (Throwable $e) {
 
-$filter = ['id' => 1];
-$options = [
-   'projection' => ['_id' => 0],
-];
-$query = new MongoDB\Driver\Query($filter, $options);
-$rows = $manager->executeQuery('examplesdb.users', $query); // $mongo contains the connection object to MongoDB
+	echo "Captured Throwable for connection : " . $e->getMessage() . PHP_EOL;
+}
 
-print_r($rows->toArray());
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 ?>
